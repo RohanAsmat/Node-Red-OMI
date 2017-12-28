@@ -112,14 +112,14 @@ console.log("tttttttttttttt");
     //.getAttribute("returnCode");
      //console.log(err_odf);
     //var path_check = body_resp.split('Such item/s not found.');
-    
+
     if (err_odf == 400 || err_odf == 404){
       //console.log("8888888888888888888888");
       //xmlmsg_omiodf = '<?xml version="1.0"?><omi:omiEnvelope xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xmlns:omi="omi.xsd" version="1.0" ttl="0"><omi:read msgformat="odf"><omi:msg><Objects xmlns="odf.xsd"><Object><id>Haut_Fourneaux_Site_1</id><Object><id>Kuka_Robots</id><Object><id>KR_6_R700_sixx_WP</id><Object><id>Sensors</id><InfoItem name="Motor_speed"/></Object></Object></Object></Object></Objects></omi:msg></omi:read></omi:omiEnvelope>';
       //console.log(path_check.length);
-      
+
       //------------------Send 2nd request if code error indicating that the InfoItem doesn't exist----------------------//
-      
+
       xmlmsg_odf = createODF_Read(options.path_InfoItem,"Object");
       xmlmsg_omiodf = createOMIODF_Read(options,oper_type,xmlmsg_odf.payload);
 
@@ -139,7 +139,7 @@ console.log("tttttttttttttt");
 
     //console.log(body_resp);
     var path_check = body_resp.split('Such item/s not found.');
-    
+
     if (path_check.length>1){
       //console.log("-----------------------------------------------------");
     } else{
@@ -159,7 +159,7 @@ console.log("tttttttttttttt");
 
   }.bind(this));
     }
-    
+
     //--------Catch error of the 1st request if code !=200 (since anyway the error code of the 2nd request will be displayed in the UI)--//
 
     if (err || err_odf != 200) {
@@ -185,7 +185,7 @@ return this;
 
 /*Creation of the O-MI/O-DF message when performing a Write request whose input parameters are contained in:
 @options: all necessary paramters (i.e., Value to be written, TTL...) entered via Node-Red UI
-*/ 
+*/
 omiNodecons.prototype.WriteInfoItem = function (options, callback) {
 
  var xmlmsg_odf = createODF_write(options.path_InfoItem,options.value);
@@ -194,7 +194,7 @@ omiNodecons.prototype.WriteInfoItem = function (options, callback) {
  console.log("6*********");
  console.log(xmlmsg_omiodf);
  console.log("7*********");
- 
+
  var url_ominode = options.path_InfoItem.split("/Objects")[0];
 
    //console.log(xmlmsg_odf.err);
@@ -231,7 +231,7 @@ omiNodecons.prototype.WriteInfoItem = function (options, callback) {
 
 /*Creation of the O-MI/O-DF message when performing a Cancel request whose input parameters are contained in:
  * @options: all necessary paramters (i.e., reqID, TTL...) entered via Node-Red UI
- */ 
+ */
  omiNodecons.prototype.CancelSubscription = function (options, callback) {
   var xmlmsg_odf = createODF_cancel(options.reqID);
   console.log(xmlmsg_odf.payload);
@@ -313,11 +313,11 @@ console.log("2*********");
 *****************        CREATE O-MI HEADER/FOOTER       ********************
 ****************************************************************************/
 function createOMIODF_Read(options,oper_type,ODFpayload) {
-  var OpenTag_OMIheader_withoutTTL= '<?xml version="1.0"?><omi:omiEnvelope xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xmlns:omi="omi.xsd" version="1.0" ttl="';
-  var OpenTag_OMIheader_part2= '><omi:read msgformat="odf"';
-  var CloseTag_OMIheader_part2= '><omi:msg><Objects xmlns="odf.xsd">';
-  var CloseTag_OMIfooter='</Objects></omi:msg></omi:read></omi:omiEnvelope>';
-  
+  var OpenTag_OMIheader_withoutTTL= '<?xml version="1.0"?><omiEnvelope xmlns="http://www.opengroup.org/xsd/omi/1.0/"  version="1.0" ttl="';
+  var OpenTag_OMIheader_part2= '><read msgformat="odf"';
+  var CloseTag_OMIheader_part2= '><msg><Objects xmlns="http://www.opengroup.org/xsd/odf/1.0/">';
+  var CloseTag_OMIfooter='</Objects></msg></read></omiEnvelope>';
+
   var OpenTag_OMIheader=OpenTag_OMIheader_withoutTTL.concat(options.ttl,'"');
 
   if (oper_type=="read1time"){
@@ -350,12 +350,51 @@ function createOMIODF_Read(options,oper_type,ODFpayload) {
 
   return OMIODF_msg;
 };
+//
+// function createOMIODF_Read(options,oper_type,ODFpayload) {
+//   var OpenTag_OMIheader_withoutTTL= '<?xml version="1.0"?><omi:omiEnvelope xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xmlns:omi="omi.xsd" version="1.0" ttl="';
+//   var OpenTag_OMIheader_part2= '><omi:read msgformat="odf"';
+//   var CloseTag_OMIheader_part2= '><omi:msg><Objects xmlns="odf.xsd">';
+//   var CloseTag_OMIfooter='</Objects></omi:msg></omi:read></omi:omiEnvelope>';
+//
+//   var OpenTag_OMIheader=OpenTag_OMIheader_withoutTTL.concat(options.ttl,'"');
+//
+//   if (oper_type=="read1time"){
+//     if (options.newest!=""){
+//       OpenTag_OMIheader_part2 = OpenTag_OMIheader_part2.concat(' newest="',options.newest,'"');
+//     }
+//     if (options.oldest!=""){
+//       OpenTag_OMIheader_part2 = OpenTag_OMIheader_part2.concat(' oldest="',options.oldest,'"');
+//     }
+//     if (options.begin!=""){
+//       OpenTag_OMIheader_part2 = OpenTag_OMIheader_part2.concat(' begin="',options.begin,'"');
+//     }
+//     if (options.end!=""){
+//       OpenTag_OMIheader_part2 = OpenTag_OMIheader_part2.concat(' end="',options.end,'"');
+//     }
+//   } else if (oper_type=="subscribe"){
+//     if (options.interval!=""){
+//       OpenTag_OMIheader_part2 = OpenTag_OMIheader_part2.concat(' interval="',options.interval,'"');
+//       if (options.callback!=""){
+//         OpenTag_OMIheader_part2 = OpenTag_OMIheader_part2.concat(' callback="',options.callback,'"');
+//       }
+//     } else{
+//       console.log("Interval paramater is MANDATORY");
+//     }
+//   } else{
+//     console.log("The requested operation is neither 'read1time' or 'subscription'");
+//   }
+//
+//   var OMIODF_msg = OpenTag_OMIheader.concat(OpenTag_OMIheader_part2,CloseTag_OMIheader_part2,ODFpayload,CloseTag_OMIfooter);
+//
+//   return OMIODF_msg;
+// };
 
 function createOMIODF_Read_poll(options,ODFpayload) {
   var OpenTag_OMIheader_withoutTTL= '<?xml version="1.0"?><omi:omiEnvelope xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xmlns:omi="omi.xsd" version="1.0" ttl="';
   var OpenTag_OMIheader_part2= '><omi:read>';
   var CloseTag_OMIfooter='</omi:read></omi:omiEnvelope>';
-  
+
   var OpenTag_OMIheader=OpenTag_OMIheader_withoutTTL.concat(options.ttl,'"');
   var OMIODF_msg = OpenTag_OMIheader.concat(OpenTag_OMIheader_part2,ODFpayload,CloseTag_OMIfooter);
 
@@ -398,7 +437,7 @@ console.log(str);
 console.log("§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§")
   var res_split = path.split("/");
 
-  for (i = 0; i <= res_split.length; i++) { 
+  for (i = 0; i <= res_split.length; i++) {
     if (res_split[i]=="Objects")
       i_Objs=i;
   }
@@ -429,7 +468,7 @@ function createODF_ReadwithMetadata(path) {
 
   var res_split = path.split("/");
 
-  for (i = 0; i <= res_split.length; i++) { 
+  for (i = 0; i <= res_split.length; i++) {
     if (res_split[i]=="Objects")
       i_Objs=i;
   }
@@ -459,7 +498,7 @@ function createODF_write(path,valueInfoItem) {
 
   var res_split = path.split("/");
 
-  for (i = 0; i <= res_split.length; i++) { 
+  for (i = 0; i <= res_split.length; i++) {
     if (res_split[i]=="Objects")
       i_Objs=i;
   }
@@ -489,7 +528,7 @@ function createODF_InfoItemWrite(payload_elem,valueInfoItem_XML) {
   var CloseTagInterm_InfoItem= '">';
   var CloseTag_InfoItem= '</InfoItem>';
   payload_elem = OpenTag_InfoItem.concat(payload_elem,CloseTagInterm_InfoItem,valueInfoItem_XML,CloseTag_InfoItem);
-  
+
   return payload_elem;
 };
 
