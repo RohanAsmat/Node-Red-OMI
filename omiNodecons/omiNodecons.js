@@ -315,7 +315,7 @@ console.log("2*********");
 function createOMIODF_Read(options,oper_type,ODFpayload) {
   var OpenTag_OMIheader_withoutTTL= '<omiEnvelope xmlns="http://www.opengroup.org/xsd/omi/1.0/" version="1.0" ttl="';
   var OpenTag_OMIheader_part2= '><read msgformat="odf"';
-  var CloseTag_OMIheader_part2= '><msg><Objects  xmlns="http://www.opengroup.org/xsd/odf/1.0/"';
+  var CloseTag_OMIheader_part2= '><msg><Objects xmlns="http://www.opengroup.org/xsd/odf/1.0/">';
   var CloseTag_OMIfooter='</Objects></msg></read></omiEnvelope>';
 
   var OpenTag_OMIheader=OpenTag_OMIheader_withoutTTL.concat(options.ttl,'"');
