@@ -313,9 +313,9 @@ console.log("2*********");
 *****************        CREATE O-MI HEADER/FOOTER       ********************
 ****************************************************************************/
 function createOMIODF_Read(options,oper_type,ODFpayload) {
-  var OpenTag_OMIheader_withoutTTL= '<?xml version="1.0"?><omiEnvelope xmlns="http://www.opengroup.org/xsd/omi/1.0/"  version="1.0" ttl="';
+  var OpenTag_OMIheader_withoutTTL= '<?xml version="1.0"?><omiEnvelope  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:odf="http://www.opengroup.org/xsd/odf/1.0/" xmlns:omi="http://www.opengroup.org/xsd/omi/1.0/" xmlns="http://www.opengroup.org/xsd/odf/1.0/"  version="1.0" ttl="';
   var OpenTag_OMIheader_part2= '><read msgformat="odf"';
-  var CloseTag_OMIheader_part2= '><msg><Objects xmlns="http://www.opengroup.org/xsd/odf/1.0/">';
+  var CloseTag_OMIheader_part2= '><msg><Objects  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:odf="http://www.opengroup.org/xsd/odf/1.0/" xmlns:omi="http://www.opengroup.org/xsd/omi/1.0/" xmlns="http://www.opengroup.org/xsd/odf/1.0/">';
   var CloseTag_OMIfooter='</Objects></msg></read></omiEnvelope>';
 
   var OpenTag_OMIheader=OpenTag_OMIheader_withoutTTL.concat(options.ttl,'"');
